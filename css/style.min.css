@@ -6109,6 +6109,38 @@ address {
   }
 }
 
+.tab-content {
+  margin-bottom: 60px;
+}
+
+@media (max-width: 767px) {
+  .tab-content {
+    margin-bottom: 40px;
+  }
+}
+
+.nav-tabs {
+  margin-bottom: 40px;
+}
+
+.nav-tabs > li > a {
+  padding: 5px 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #27a1f3;
+}
+
+@media (min-width: 768px) {
+  .nav-tabs > li > a {
+    border-radius: 8px 8px 0 0 !important;
+  }
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #27a1f3;
+  color: #fff;
+}
+
 .row-0 {
   margin-right: 0;
   margin-left: 0;
@@ -9077,21 +9109,21 @@ a.thumbnail {
 }
 
 .section-range {
-  padding-top: 150px;
+  padding-top: 60px;
   padding-bottom: 150px;
   overflow: hidden;
 }
 
 @media (max-width: 767px) {
   .section-range {
-    padding-top: 24vw;
+    padding-top: 15vw;
     padding-bottom: 50px;
   }
 }
 
 .section-range .title {
   margin-top: 0;
-  margin-bottom: 50px;
+  margin-bottom: 70px;
   font-size: 50px;
   text-align: center;
 }
@@ -9356,7 +9388,7 @@ input::-moz-focus-outer {
 
 .complexity-range .range-slider__range::-webkit-slider-thumb {
   position: relative;
-  top: -8px;
+  top: 0;
   z-index: 1;
 }
 
