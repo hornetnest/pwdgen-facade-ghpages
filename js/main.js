@@ -3179,6 +3179,28 @@ class ASCIILevelsRSG extends CharsetLimitedRSG {
 
 /***/ }),
 
+/***/ "./_js/modules/save-form-state.js":
+/*!****************************************!*\
+  !*** ./_js/modules/save-form-state.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var savemyform_jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! savemyform.jquery */ "./node_modules/savemyform.jquery/src/saveMyForm.jquery.js");
+/* harmony import */ var savemyform_jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(savemyform_jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* provided dependency */ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+// https://github.com/pjjonesnz/saveMyForm.jquery
+
+
+
+$(function () {
+  $(".section-range").saveMyForm();
+});
+
+
+/***/ }),
+
 /***/ "./_js/modules/select-text.js":
 /*!************************************!*\
   !*** ./_js/modules/select-text.js ***!
@@ -3249,32 +3271,6 @@ function textFluffy() {
     $("#text-fluffy-2").addClass("active");
   }, 2400);
 }
-
-
-/***/ }),
-
-/***/ "./_js/modules/view-more.js":
-/*!**********************************!*\
-  !*** ./_js/modules/view-more.js ***!
-  \**********************************/
-/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
-
-/* provided dependency */ var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/*
- *
- * ----------------------------------------------- */
-jQuery(function ($) {
-  var $viewmore = $("#view-more-1, #view-more-2");
-  var $btn = ".btn-view-more";
-
-  $viewmore.on("show.bs.collapse", function (e) {
-    $(this).closest(".accordion").find($btn).text("Close");
-  });
-
-  $viewmore.on("hide.bs.collapse", function (e) {
-    $(this).closest(".accordion").find($btn).text("View more");
-  });
-});
 
 
 /***/ }),
@@ -14630,6 +14626,338 @@ return jQuery;
 } );
 
 
+/***/ }),
+
+/***/ "./node_modules/savemyform.jquery/src/saveMyForm.jquery.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/savemyform.jquery/src/saveMyForm.jquery.js ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
+
+/* provided dependency */ var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/*!
+ * Save My Form 2020 - a jQuery Plugin
+ * version: 1.5.6
+ * Copyright: 2020 Paul Jones
+ * MIT license
+ */
+
+(function($, window, document, undefined) {
+    'use strict';
+
+    $.extend($.fn, {
+        saveMyForm: function(methodOrOptions, args) {
+            return this.each(function() {
+                var $plugin = $.data(this, 'plugin_saveMyForm');
+
+                if (!$plugin) {
+                    var pluginOptions =
+                        typeof methodOrOptions === 'object'
+                            ? methodOrOptions
+                            : {};
+                    $plugin = $.data(
+                        this,
+                        'plugin_saveMyForm',
+                        new $.saveMyForm(this, pluginOptions)
+                    );
+                }
+
+                if (typeof methodOrOptions === 'string') {
+                    if (methodOrOptions === 'clearStorage') {
+                        $.saveMyForm.clearStorage($plugin._formName);
+                    } else {
+                        if (!$.isArray(args)) {
+                            args = [args];
+                        }
+                        if (typeof $plugin[methodOrOptions] === 'function') {
+                            $plugin[methodOrOptions].apply($plugin, args);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    $.saveMyForm = function(element, options) {
+        this._form = element;
+        this.settings = $.extend({}, $.saveMyForm.defaults, options);
+        this.init();
+    };
+
+    $.extend($.saveMyForm, {
+        defaults: {
+            exclude: ':password, input[type="hidden"], :file, .disable_save',
+            include: null,
+            formName: undefined,
+            addPathToName: false,
+            addPathLength: -255,
+            loadInputs: true,
+            sameNameSeparator: '___',
+            resetOnSubmit: true
+        },
+        prototype: {
+            _form: null,
+            init: function() {
+                this._elementList = [];
+                this._loadingList = {};
+                this._formName = '';
+                if (!this.setFormName()) {
+                    return;
+                }
+                var $plugin = this;
+                this._elementList = $.saveMyForm.getElementList(this._formName);
+                $(this._form)
+                    .find(':input')
+                    .each(function() {
+                        $plugin.addElement(this);
+                    });
+                this.storeElementList();
+                if (this.settings.resetOnSubmit === true) {
+                    $(this._form).submit(function() {
+                        $.saveMyForm.clearStorage($plugin._formName);
+                    });
+                }
+            },
+            setFormName: function() {
+                var $form = $(this._form);
+                this._formName =
+                    this.settings.formName !== undefined
+                        ? this.settings.formName
+                        : $form.attr('id') !== undefined
+                        ? $form.attr('id')
+                        : $form.attr('name') !== undefined
+                        ? $form.attr('name')
+                        : undefined;
+                if (this._formName == undefined) {
+                    var formIndex = $('form').index($form);
+                    if (formIndex !== -1) {
+                        this._formName =
+                            window.location.pathname +
+                            '_formindex_' +
+                            formIndex;
+                    } else {
+                        return false;
+                    }
+                }
+                if (this.settings.addPathToName === true) {
+                    this._formName =
+                        this._formName +
+                        '___' +
+                        window.location.pathname.slice(
+                            this.settings.addPathLength
+                        );
+                }
+                return true;
+            },
+            addElement: function(element) {
+                var $element = $(element);
+                if ($element.is(this.settings.exclude)) {
+                    return;
+                }
+                if (
+                    this.settings.include !== null &&
+                    !$element.is(this.settings.include)
+                ) {
+                    return;
+                }
+                var $plugin = this,
+                    name = this.getName(element),
+                    callbackMatch = undefined;
+                if($.saveMyForm.callbacks.length > 0) {
+                    $.each($.saveMyForm.callbacks, function(index, callback) {
+                        if(callback.match(element)) {
+                            callbackMatch = callback;
+                            return false;
+                        }
+                    });
+                }
+                if (name) {
+                    $element
+                        .change(function(e) {
+                            $plugin.storeElement(e);
+                        })
+                        .keyup(
+                            debounce(function(e) {
+                                $plugin.storeElement(e);
+                            }, 500)
+                        );
+
+                    if (this._loadingList[name] === undefined) {
+                        this._loadingList[name] = 0;
+                    } else {
+                        // If another element is found with the same name that isn't a radio group,
+                        // add multiple data to differentiate the field
+                        if (!$element.is(':radio')) {
+                            this._loadingList[name]++;
+
+                            $.data(
+                                element,
+                                'multiple',
+                                this._loadingList[name]
+                            );
+                            name =
+                                name +
+                                this.settings.sameNameSeparator +
+                                this._loadingList[name];
+                        }
+                    }
+                    if (this._elementList.indexOf(name) === -1) {
+                        this._elementList.push(name);
+                    }
+                    if (this.settings.loadInputs === true) {
+                        if (callbackMatch && callbackMatch.loadElement) {
+                            callbackMatch.loadElement(element, this);
+                        } else {
+                            this.loadElement(element);
+                        }
+                    }
+                }
+            },
+            loadElement: function(element) {
+                var $element = $(element),
+                    name = this.getName(element),
+                    value = localStorage.getItem(name);
+                if (value !== null) {
+                    value = JSON.parse(value);
+                    if ($element.is(':checkbox')) {
+                        $element.prop('checked', value).change();
+                    } else if ($element.is(':radio')) {
+                        if (value == $element.val()) {
+                            $element.prop('checked', true).change();
+                        }
+                    } else {
+                        $element.val(value).change();
+                    }
+                }
+            },
+            storeElement: function(event) {
+                var name = this.getName(event.target),
+                    $element = $(event.target),
+                    value;
+                if ($(event.target).is(':checkbox')) {
+                    value = $element.prop('checked');
+                } else {
+                    value = $element.val();
+                }
+                localStorage.setItem(name, JSON.stringify(value));
+            },
+            storeElementList: function() {
+                localStorage.setItem(
+                    'elementList_' + this._formName,
+                    JSON.stringify(this._elementList)
+                );
+            },
+            clearElementList: function() {
+                localStorage.removeItem('elementList_' + this._formName);
+            },
+            getName: function(element) {
+                var $element = $(element);
+                // Set by name first to allow radio groups to function, then id
+                var elName =
+                    $element.attr('name') !== undefined
+                        ? $element.attr('name')
+                        : $element.attr('id') !== undefined
+                        ? $element.attr('id')
+                        : undefined;
+                if (elName === undefined) {
+                    return undefined;
+                }
+                return (
+                    this._formName +
+                    '_' +
+                    elName +
+                    ($.data(element, 'multiple') !== undefined
+                        ? this.settings.sameNameSeparator +
+                          $.data(element, 'multiple')
+                        : '')
+                );
+            }
+        },
+        callbacks: [],
+        addCallback: function(callback) {
+            $.saveMyForm.callbacks.push(callback);
+        },
+        getElementList: function(savedFormName) {
+            return (
+                JSON.parse(
+                    localStorage.getItem('elementList_' + savedFormName)
+                ) || []
+            );
+        },
+        clearStorage: function(savedFormName) {
+            var elements = $.saveMyForm.getElementList(savedFormName);
+            if (elements.length > 0) {
+                $.each(elements, function(key, value) {
+                    localStorage.removeItem(value);
+                });
+                return true;
+            }
+        }
+    });
+
+    // functions to maintain compatibility with scripts set up using versions < 1.4.6
+    $.fn['saveMyForm'].defaults = $.saveMyForm.defaults;
+    $.fn['saveMyForm'].getElementListByFormName = $.saveMyForm.getElementList;
+    $.fn['saveMyForm'].clearStorageByFormName = $.saveMyForm.clearStorage;
+
+    // Underscore debounce function
+    // Copyright (c) 2009-2018 Jeremy Ashkenas, DocumentCloud and Investigative
+    // Reporters & Editors
+    /* istanbul ignore next */
+    function debounce(func, wait, immediate) {
+        var timeout, args, context, timestamp, result;
+        if (null == wait) wait = 100;
+
+        function later() {
+            var last = Date.now() - timestamp;
+
+            if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+            } else {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                    context = args = null;
+                }
+            }
+        }
+
+        var debounced = function() {
+            context = this;
+            args = arguments;
+            timestamp = Date.now();
+            var callNow = immediate && !timeout;
+            if (!timeout) timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+            }
+
+            return result;
+        };
+
+        debounced.clear = function() {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        };
+
+        debounced.flush = function() {
+            if (timeout) {
+                result = func.apply(context, args);
+                context = args = null;
+
+                clearTimeout(timeout);
+                timeout = null;
+            }
+        };
+
+        return debounced;
+    }
+})(jQuery, window, document);
+
+
 /***/ })
 
 /******/ 	});
@@ -14715,16 +15043,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery_match_height__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery-match-height */ "./node_modules/jquery-match-height/dist/jquery.matchHeight.js");
 /* harmony import */ var jquery_match_height__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery_match_height__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _modules_webfont__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/webfont */ "./_js/modules/webfont.js");
-/* harmony import */ var _modules_view_more__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/view-more */ "./_js/modules/view-more.js");
-/* harmony import */ var _modules_view_more__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_modules_view_more__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _modules_jquery_match_height__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/jquery-match-height */ "./_js/modules/jquery-match-height.js");
-/* harmony import */ var _modules_character_range__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/character-range */ "./_js/modules/character-range.js");
-/* harmony import */ var _modules_character_range__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_modules_character_range__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/select-text */ "./_js/modules/select-text.js");
-/* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_modules_select_text__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/complexity-range */ "./_js/modules/complexity-range.js");
-/* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_modules_complexity_range__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _modules_passwd_entrypoint__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/passwd.entrypoint */ "./_js/modules/passwd.entrypoint.js");
+/* harmony import */ var _modules_jquery_match_height__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/jquery-match-height */ "./_js/modules/jquery-match-height.js");
+/* harmony import */ var _modules_character_range__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/character-range */ "./_js/modules/character-range.js");
+/* harmony import */ var _modules_character_range__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_modules_character_range__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/select-text */ "./_js/modules/select-text.js");
+/* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_modules_select_text__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/complexity-range */ "./_js/modules/complexity-range.js");
+/* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_modules_complexity_range__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _modules_passwd_entrypoint__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/passwd.entrypoint */ "./_js/modules/passwd.entrypoint.js");
+/* harmony import */ var _modules_save_form_state__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/save-form-state */ "./_js/modules/save-form-state.js");
 
 
 
@@ -14732,6 +15059,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+// import "./modules/view-more";
 // import "./modules/page-top";
 // import "./modules/toggle-disabled-input-field";
 // import "./modules/jqueryvalidation";
@@ -14742,16 +15076,8 @@ __webpack_require__.r(__webpack_exports__);
 // import "./modules/waypoints";
 // import "./modules/dropdown-hover";
 // import "./modules/swiper";
-//
 // import "./modules/aos";
-
-
-
-
 // import "./modules/luxy";
-
-
-
 // import ScrollMagic from "scrollmagic";
 
 }();
