@@ -2627,8 +2627,13 @@ function setBubble(range, bubble) {
 /*!*****************************************!*\
   !*** ./_js/modules/complexity-range.js ***!
   \*****************************************/
-/***/ (function() {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "setBubble": function() { return /* binding */ setBubble; }
+/* harmony export */ });
 const allRanges = document.querySelectorAll(".container-all-complexity-range");
 allRanges.forEach((wrap) => {
   const range = wrap.querySelector(".range-slider__range");
@@ -2732,8 +2737,10 @@ jQuery(window).on("load", function (e) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _passwd__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./passwd */ "./_js/modules/passwd.js");
+/* harmony import */ var _complexity_range__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./complexity-range */ "./_js/modules/complexity-range.js");
 /* provided dependency */ var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* provided dependency */ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
 
 
 /*
@@ -2790,6 +2797,17 @@ $("#input-password-length-numletter").on("keypress", function (e) {
   if (finalValue > 32 || finalValue < 8) {
     e.preventDefault();
   }
+});
+
+/*
+ *
+ * ----------------------------------------------- */
+jQuery(function ($) {
+  $(window).on("load", function (e) {
+    const bubble_range = $("#complexity-range-input");
+    const bubble = $(".bubble-complexity-range");
+    _complexity_range__WEBPACK_IMPORTED_MODULE_1__.setBubble(bubble_range.get(0), bubble.get(0));
+  });
 });
 
 
@@ -15049,7 +15067,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/select-text */ "./_js/modules/select-text.js");
 /* harmony import */ var _modules_select_text__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_modules_select_text__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/complexity-range */ "./_js/modules/complexity-range.js");
-/* harmony import */ var _modules_complexity_range__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_modules_complexity_range__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _modules_passwd_entrypoint__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/passwd.entrypoint */ "./_js/modules/passwd.entrypoint.js");
 /* harmony import */ var _modules_save_form_state__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/save-form-state */ "./_js/modules/save-form-state.js");
 
