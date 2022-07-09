@@ -2738,10 +2738,16 @@ jQuery(window).on("load", function (e) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _passwd__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./passwd */ "./_js/modules/passwd.js");
 /* harmony import */ var _complexity_range__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./complexity-range */ "./_js/modules/complexity-range.js");
-/* provided dependency */ var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* provided dependency */ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* provided dependency */ var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
+
+function regenerate(rsg) {
+  const newPasswd = rsg.genString($("#input-password-length").val());
+  $("#password").val(newPasswd);
+  $("#input-base64").val(_passwd__WEBPACK_IMPORTED_MODULE_0__.toBase64(newPasswd));
+}
 
 /*
  *
@@ -2752,23 +2758,28 @@ jQuery(window).on("load", function () {
   const defaultVal = 8;
 
   const rsg = new _passwd__WEBPACK_IMPORTED_MODULE_0__.ASCIILevelsRSG(complexityEle.val());
-  $("#password").val(rsg.genString(passwordLengthELe.val()));
+  regenerate(rsg);
 
   $("#input-password-length-numletter").val(passwordLengthELe.val());
 
+  $("#password").on("keyup", function () {
+    const passwdEle = $(this);
+    $("#input-base64").val(_passwd__WEBPACK_IMPORTED_MODULE_0__.toBase64(passwdEle.val()));
+  });
+
   $("#btn-refresh-password").on("click", () => {
     const rsg = new _passwd__WEBPACK_IMPORTED_MODULE_0__.ASCIILevelsRSG(complexityEle.val());
-    $("#password").val(rsg.genString(passwordLengthELe.val()));
+    regenerate(rsg);
   });
 
   $(document).on("input change", "#complexity-range-input", function () {
     const rsg = new _passwd__WEBPACK_IMPORTED_MODULE_0__.ASCIILevelsRSG(complexityEle.val());
-    $("#password").val(rsg.genString(passwordLengthELe.val()));
+    regenerate(rsg);
   });
 
   $(document).on("input change", "#input-password-length", function () {
     const rsg = new _passwd__WEBPACK_IMPORTED_MODULE_0__.ASCIILevelsRSG(complexityEle.val());
-    $("#password").val(rsg.genString($(this).val()));
+    regenerate(rsg);
     $("#input-password-length-numletter").val($(this).val());
   });
 
@@ -2777,12 +2788,12 @@ jQuery(window).on("load", function () {
     "#input-password-length-numletter",
     function () {
       const rsg = new _passwd__WEBPACK_IMPORTED_MODULE_0__.ASCIILevelsRSG(complexityEle.val());
-      $("#password").val(rsg.genString($(this).val()));
+      regenerate(rsg);
       passwordLengthELe.val($(this).val());
 
       if (!$("#input-password-length-numletter").val()) {
-        $("#password").val(rsg.genString(8));
         passwordLengthELe.val(defaultVal);
+        regenerate(rsg);
       }
     }
   );
@@ -2822,33 +2833,39 @@ jQuery(function ($) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MAX_SAFE_INTEGER": function() { return /* binding */ MAX_SAFE_INTEGER; },
-/* harmony export */   "MIN_SAFE_INTEGER": function() { return /* binding */ MIN_SAFE_INTEGER; },
-/* harmony export */   "MIN_INT32": function() { return /* binding */ MIN_INT32; },
-/* harmony export */   "MAX_INT32": function() { return /* binding */ MAX_INT32; },
-/* harmony export */   "MIN_UINT32": function() { return /* binding */ MIN_UINT32; },
-/* harmony export */   "MAX_UINT32": function() { return /* binding */ MAX_UINT32; },
+/* harmony export */   "ASCIILevelsRSG": function() { return /* binding */ ASCIILevelsRSG; },
+/* harmony export */   "ASCII_LEVELS_CHARSETS": function() { return /* binding */ ASCII_LEVELS_CHARSETS; },
+/* harmony export */   "ASCIIfromBase64": function() { return /* binding */ ASCIIfromBase64; },
+/* harmony export */   "CASCADED_ASCII_LEVELS_CHARSETS": function() { return /* binding */ CASCADED_ASCII_LEVELS_CHARSETS; },
+/* harmony export */   "CharsetLimitedRSG": function() { return /* binding */ CharsetLimitedRSG; },
+/* harmony export */   "CryptoRNG": function() { return /* binding */ CryptoRNG; },
 /* harmony export */   "MAX_BITS_PER_NUMBER": function() { return /* binding */ MAX_BITS_PER_NUMBER; },
 /* harmony export */   "MAX_CARDINALITY": function() { return /* binding */ MAX_CARDINALITY; },
+/* harmony export */   "MAX_INT32": function() { return /* binding */ MAX_INT32; },
+/* harmony export */   "MAX_SAFE_INTEGER": function() { return /* binding */ MAX_SAFE_INTEGER; },
+/* harmony export */   "MAX_UINT32": function() { return /* binding */ MAX_UINT32; },
 /* harmony export */   "MIN_CARDINALITY": function() { return /* binding */ MIN_CARDINALITY; },
-/* harmony export */   "bitsToMapItem": function() { return /* binding */ bitsToMapItem; },
+/* harmony export */   "MIN_INT32": function() { return /* binding */ MIN_INT32; },
+/* harmony export */   "MIN_SAFE_INTEGER": function() { return /* binding */ MIN_SAFE_INTEGER; },
+/* harmony export */   "MIN_UINT32": function() { return /* binding */ MIN_UINT32; },
+/* harmony export */   "MathRNG": function() { return /* binding */ MathRNG; },
+/* harmony export */   "Series32": function() { return /* binding */ Series32; },
+/* harmony export */   "UTF16fromASCII": function() { return /* binding */ UTF16fromASCII; },
+/* harmony export */   "UTF16fromBase64": function() { return /* binding */ UTF16fromBase64; },
+/* harmony export */   "UTF16toASCII": function() { return /* binding */ UTF16toASCII; },
 /* harmony export */   "binaryAlign": function() { return /* binding */ binaryAlign; },
+/* harmony export */   "bitsSlice32": function() { return /* binding */ bitsSlice32; },
+/* harmony export */   "bitsToMapItem": function() { return /* binding */ bitsToMapItem; },
+/* harmony export */   "genHighOnes32Mask": function() { return /* binding */ genHighOnes32Mask; },
+/* harmony export */   "genLowOnes32Mask": function() { return /* binding */ genLowOnes32Mask; },
+/* harmony export */   "getCryptoRNG": function() { return /* binding */ getCryptoRNG; },
+/* harmony export */   "getMathRNG": function() { return /* binding */ getMathRNG; },
+/* harmony export */   "getSeries32RNG": function() { return /* binding */ getSeries32RNG; },
+/* harmony export */   "isASCIIEntirely": function() { return /* binding */ isASCIIEntirely; },
 /* harmony export */   "numbersToHoldSeries": function() { return /* binding */ numbersToHoldSeries; },
 /* harmony export */   "seriesItemsFromNumbers": function() { return /* binding */ seriesItemsFromNumbers; },
-/* harmony export */   "toUint32": function() { return /* binding */ toUint32; },
-/* harmony export */   "genLowOnes32Mask": function() { return /* binding */ genLowOnes32Mask; },
-/* harmony export */   "genHighOnes32Mask": function() { return /* binding */ genHighOnes32Mask; },
-/* harmony export */   "bitsSlice32": function() { return /* binding */ bitsSlice32; },
-/* harmony export */   "Series32": function() { return /* binding */ Series32; },
-/* harmony export */   "getSeries32RNG": function() { return /* binding */ getSeries32RNG; },
-/* harmony export */   "MathRNG": function() { return /* binding */ MathRNG; },
-/* harmony export */   "getMathRNG": function() { return /* binding */ getMathRNG; },
-/* harmony export */   "CryptoRNG": function() { return /* binding */ CryptoRNG; },
-/* harmony export */   "getCryptoRNG": function() { return /* binding */ getCryptoRNG; },
-/* harmony export */   "CharsetLimitedRSG": function() { return /* binding */ CharsetLimitedRSG; },
-/* harmony export */   "ASCII_LEVELS_CHARSETS": function() { return /* binding */ ASCII_LEVELS_CHARSETS; },
-/* harmony export */   "CASCADED_ASCII_LEVELS_CHARSETS": function() { return /* binding */ CASCADED_ASCII_LEVELS_CHARSETS; },
-/* harmony export */   "ASCIILevelsRSG": function() { return /* binding */ ASCIILevelsRSG; }
+/* harmony export */   "toBase64": function() { return /* binding */ toBase64; },
+/* harmony export */   "toUint32": function() { return /* binding */ toUint32; }
 /* harmony export */ });
 const MAX_SAFE_INTEGER = 9007199254740991; // 2^53 - 1 or 2**53-1 (ES6 syntax)
 const MIN_SAFE_INTEGER = -9007199254740991; // -(2^53 - 1) or -(2**53 - 1) (ES6 syntax)
@@ -2931,6 +2948,68 @@ function bitsSlice32(n, lowIndex, highIndex = MAX_BITS_PER_NUMBER) {
   }
   const mask = genLowOnes32Mask(highIndex);
   return (n & mask) >>> lowIndex;
+}
+function isASCIIEntirely(s) {
+  for (let i = 0; i < s.length; i++) {
+    if (s.charCodeAt(i) > 0xff) {
+      return false;
+    }
+  }
+  return true;
+}
+// convert JS's UTF16 (2-bytes) encoded string to extended-ASCII (1-byte) encoded string
+function UTF16toASCII(s) {
+  const low8Mask = genLowOnes32Mask(8);
+  let result = "";
+  for (let i = 0; i < s.length; i++) {
+    const charCode = s.charCodeAt(i);
+    // split 2-bytes charCode into 2, each with 1-byte value (high and low portions).
+    const mostSignificantPortion = charCode >>> 8;
+    const leastSignificantPortion = charCode & low8Mask;
+    result += String.fromCharCode(
+      mostSignificantPortion,
+      leastSignificantPortion
+    );
+  }
+  return result;
+}
+// revert extended-ASCII (1-byte) encoded string back to JS's UTF16 (2-bytes) encoded string
+function UTF16fromASCII(s) {
+  if (s.length % 2 != 0) {
+    // length is not even
+    throw new RangeError("string length must be a multiple of 2: " + s.length);
+  }
+  if (!isASCIIEntirely(s)) {
+    throw new RangeError("string must consist entirely of ASCII characters");
+  }
+  let result = "";
+  for (let i = 0; i < s.length; i += 2) {
+    const mostSignificantPortion = s.charCodeAt(i);
+    const leastSignificantPortion = s.charCodeAt(i + 1);
+    const charCode = (mostSignificantPortion << 8) | leastSignificantPortion;
+    result += String.fromCharCode(charCode);
+  }
+  return result;
+}
+function toBase64(s) {
+  if (isASCIIEntirely(s)) {
+    return btoa(s);
+  }
+  // assume UTF16 as JS's builtin String has, quoted: "In JavaScript strings are represented using the UTF-16 character encoding: in this encoding, strings are represented as a sequence of 16-bit (2 byte) units. Every ASCII character fits into the first byte of one of these units, but many other characters don't.". Source: https://developer.mozilla.org/en-US/docs/Web/API/btoa#unicode_strings
+  const sASCIIEnc = UTF16toASCII(s);
+  return btoa(sASCIIEnc);
+}
+function ASCIIfromBase64(b64s) {
+  return atob(b64s);
+}
+function UTF16fromBase64(b64s) {
+  const sASCIIEnc = atob(b64s);
+  if (sASCIIEnc.length % 2 != 0) {
+    throw new RangeError(
+      "UTF16-encoded-as-ASCII string length must be a multiple of 2 (even)"
+    );
+  }
+  return UTF16fromASCII(sASCIIEnc);
 }
 // Series hold an append-only series of numbers, with only 32 least-significant bits used per item even-though they are all 64bits numbers.
 class Series32 {
@@ -3154,6 +3233,10 @@ class CharsetLimitedRSG {
       chars.push(this.charSet[charIdx]);
     }
     return chars.join("");
+  }
+
+  genBase64(origStrLen) {
+    return toBase64(this.genString(origStrLen));
   }
 }
 const ASCII_LEVELS_CHARSETS = [
